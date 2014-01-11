@@ -17,7 +17,8 @@ IUSE=""
 
 DEPEND="${RDEPEND}
 		>=virtual/perl-Module-Build-0.34.0201"
-RDEPEND=">=dev-perl/Image-Imlib2-2.30.0
+RDEPEND=">=dev-lang/perl-5.12.4-r1[ithreads]
+		 >=dev-perl/Image-Imlib2-2.30.0
 		 >=dev-perl/HTTP-Daemon-6.10.0
 		 >=virtual/perl-Time-HiRes-1.972.200
 		 >=media-tv/mythtv-0.26
@@ -34,18 +35,6 @@ src_prepare() {
 	epatch "${FILESDIR}/MDD.pm.patch"
 }
 
-#src_install() {
-#	newinitd "${S}"/init/gentoo mdd
-#
-#	insinto "/etc/"
-#	doins "conf/mdd.conf" || die
-#
-#	insinto "/usr/bin/"
-#	doins "bin/mdd.pl" || die
-#
-#	insinto "/usr/lib/"
-#	doins -r "${S}/lib/MDD" || die
-#}
 src_install() {
 	newinitd "${S}"/init/gentoo mdd
 
