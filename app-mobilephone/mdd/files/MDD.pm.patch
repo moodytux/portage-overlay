@@ -1,0 +1,11 @@
+--- build/Build/MDD.pm	2012-11-26 15:06:19.000000000 +0000
++++ build/Build/MDD.pm.new	2014-01-11 17:47:00.659835447 +0000
+@@ -140,7 +140,7 @@
+ sub ACTION_install {
+     my $self = shift;
+     croak("$0 must be run as root to install") unless ($> == 0);
+-    $self->create_account();
++    #$self->create_account();
+     $self->SUPER::ACTION_install;
+     $self->install_conf();
+     if ($self->feature('backend')) {
