@@ -45,3 +45,9 @@ pkg_setup() {
 	enewgroup mdd
 	enewuser mdd -1 -1 /dev/null "mdd" "-r -c 'Added by MDD'"
 }
+
+pkg_postinst() {
+	elog "Ensure you set mdd to start by using: rc-update add mdd default"
+	elog "If you are reinstalling, please restart the mdd service using:"
+	elog "/etc/init.d/mdd restart"
+}
