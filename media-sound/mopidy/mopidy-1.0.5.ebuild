@@ -28,3 +28,8 @@ python_install_all() {
     newconfd "${FILESDIR}/conf.d" mopidy
     distutils-r1_python_install_all
 }
+
+pkg_postinst() {
+    elog "Please ensure you modify /etc/conf.d/mopidy to point to your local"
+    elog "music store before starting the server."
+}
