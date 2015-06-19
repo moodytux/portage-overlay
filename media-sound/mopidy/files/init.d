@@ -9,6 +9,7 @@ depend() {
 
 start() {
 	ebegin "Starting mopidy"
+	/usr/bin/mopidy local scan
 	start-stop-daemon --start --quiet -m --pidfile /var/run/mopidy.pid \
 		--background --exec /usr/bin/mopidy
 	eend $? "Failed to start mopidy."
