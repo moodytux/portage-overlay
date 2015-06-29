@@ -11,7 +11,7 @@ start() {
 	ebegin "Starting mopidy"
 	/usr/bin/mopidy local scan
 	start-stop-daemon --start --quiet -m --pidfile /var/run/mopidy.pid \
-		--background --exec /usr/bin/mopidy --config /etc/mopidy/mopidy.conf
+		--background --exec /usr/bin/mopidy -- --config /etc/mopidy/mopidy.conf
 	eend $? "Failed to start mopidy."
 }
 
