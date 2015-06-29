@@ -25,7 +25,8 @@ RDEPEND="${DEPEND}"
 
 python_install_all() {
     newinitd "${FILESDIR}/init.d" mopidy
-    newconfd "${FILESDIR}/conf.d" mopidy
+    insinto /etc/mopidy
+    doins "${FILESDIR}/mopidy.conf"
     distutils-r1_python_install_all
 }
 
