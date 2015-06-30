@@ -16,11 +16,13 @@ HOMEPAGE="http://www.mopidy.com/"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 IUSE=""
 
-DEPEND="dev-python/gst-python
-	media-plugins/gst-plugins-meta:0.10"
+DEPEND="dev-python/gst-python:0.10
+	media-plugins/gst-plugins-meta:0.10
+	>=www-servers/tornado-2.3
+	>=dev-python/pykka-1.1"
 RDEPEND="${DEPEND}"
 
 python_install_all() {
@@ -31,6 +33,6 @@ python_install_all() {
 }
 
 pkg_postinst() {
-    elog "Please ensure you modify /etc/conf.d/mopidy to point to your local"
+    elog "Please ensure you modify /etc/mopidy/mopidy.conf to point to your local"
     elog "music store before starting the server."
 }

@@ -3,13 +3,14 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+extra_commands="scan"
+
 depend() {
 	use net
 }
 
 start() {
 	ebegin "Starting mopidy"
-	/usr/bin/mopidy local scan
 	start-stop-daemon --start --quiet -m --pidfile /var/run/mopidy.pid \
 		--background --exec /usr/bin/mopidy -- --config /etc/mopidy/mopidy.conf
 	eend $? "Failed to start mopidy."
@@ -18,5 +19,15 @@ start() {
 stop() {
 	ebegin "Stopping mopidy"
 	start-stop-daemon --stop --quiet --pidfile /var/run/mopidy.pid
+	eend $?
+}
+
+scan() {
+	ebegin "Scanning for local music"
+	if [ -f /var/run/mopidy.pid ]; then
+		eerror "Please stop the mopidy server before scanning" 
+	else
+		/usr/bin/mopidy --config /etc/mopidy/mopidy.conf local scan
+	fi
 	eend $?
 }
