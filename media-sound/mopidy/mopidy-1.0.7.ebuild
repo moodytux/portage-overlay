@@ -33,6 +33,13 @@ python_install_all() {
 }
 
 pkg_postinst() {
-    elog "Please ensure you modify /etc/mopidy/mopidy.conf to point to your local"
-    elog "music store before starting the server."
+    elog "Be sure to enable either the MPD server or the HTTP server by modifying either the"
+    elog "[mpd] or [http] sections respectively in /etc/mopidy/mopidy.conf."
+    elog
+    elog "To enable local playback, edit the [local] config entries and point media_dir to"
+    elog "your local music store. Then run:"
+    elog
+    elog "    /etc/init.d/mopidy scan"
+    elog
+    elog "before starting the server."
 }
