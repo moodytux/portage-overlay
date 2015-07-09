@@ -17,12 +17,16 @@ HOMEPAGE="http://www.mopidy.com/"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE=""
+IUSE="shout"
 
 DEPEND="dev-python/gst-python:0.10
-	media-plugins/gst-plugins-meta:0.10
-	>=www-servers/tornado-2.3
-	>=dev-python/pykka-1.1"
+    media-plugins/gst-plugins-meta:0.10
+    >=www-servers/tornado-2.3
+    >=dev-python/pykka-1.1
+    shout? (
+        net-misc/icecast
+        media-plugins/gst-plugins-shout2:0.10
+	)"
 RDEPEND="${DEPEND}"
 
 python_install_all() {
@@ -33,8 +37,8 @@ python_install_all() {
 }
 
 pkg_postinst() {
-    elog "Be sure to enable either the MPD server or the HTTP server by modifying either the"
-    elog "[mpd] or [http] sections respectively in /etc/mopidy/mopidy.conf."
+    elog "Be sure to enable the MPD server by modifying the [mpd] section in"
+    elog "/etc/mopidy/mopidy.conf."
     elog
     elog "To enable local playback, edit the [local] config entries and point media_dir to"
     elog "your local music store. Then run:"
@@ -42,4 +46,11 @@ pkg_postinst() {
     elog "    /etc/init.d/mopidy scan"
     elog
     elog "before starting the server."
+
+    if use shout; then
+        elog
+        elog "You have compiled in support for icecast which provides support to stream"
+        elog "to other devices on your network. Make sure your icecast server is running"
+        elog "to use it with mopidy, and update the [output] section in the config."
+    fi
 }
