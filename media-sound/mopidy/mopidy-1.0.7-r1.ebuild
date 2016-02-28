@@ -26,6 +26,7 @@ DEPEND="dev-python/gst-python:0.10
     shout? (
         net-misc/icecast
         media-plugins/gst-plugins-shout2:0.10
+        media-plugins/gst-plugins-lame:0.10
 	)"
 RDEPEND="${DEPEND}"
 
