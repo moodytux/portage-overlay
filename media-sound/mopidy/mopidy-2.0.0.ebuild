@@ -16,7 +16,7 @@ HOMEPAGE="http://www.mopidy.com/"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 IUSE="shout"
 
 DEPEND="dev-python/gst-python:1.0
