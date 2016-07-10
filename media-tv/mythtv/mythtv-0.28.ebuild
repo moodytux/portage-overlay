@@ -51,7 +51,7 @@ COMMON="
 	dev-qt/qtsql:5/5.6[mysql]
 	dev-qt/qtopengl:5/5.6
 	dev-qt/qtwebkit:5/5.6
-	dev-qt/qtxml:5=
+	dev-qt/qtxml:5/5.6
 	x11-misc/wmctrl:=
 	virtual/mysql
 	virtual/opengl:=
