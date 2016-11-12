@@ -1,6 +1,6 @@
 diff -ruN mythtv-0.28/mythplugins/configure mythtv-0.28_new/mythplugins/configure
 --- mythtv-0.28/mythplugins/configure	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/configure	2016-11-12 17:12:58.280078053 +0000
++++ mythtv-0.28_new/mythplugins/configure	2016-11-12 18:17:31.698777894 +0000
 @@ -682,7 +682,7 @@
          echo "MythMusic requires FLAC."
      fi
@@ -46,7 +46,7 @@ diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/cddecoder.cpp mythtv-0.28_
  // MythTV
 diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/cddecoder.h mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cddecoder.h
 --- mythtv-0.28/mythplugins/mythmusic/mythmusic/cddecoder.h	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cddecoder.h	2016-11-12 17:12:58.331077172 +0000
++++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cddecoder.h	2016-11-12 18:24:28.905534483 +0000
 @@ -15,6 +15,11 @@
  # include <cdio/paranoia.h>
  #endif
@@ -64,13 +64,13 @@ diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/cddecoder.h mythtv-0.28_ne
      int m_tracknum;
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
      CdIo_t *m_cdio;
      cdrom_drive_t *m_device;
      cdrom_paranoia_t *m_paranoia;
 diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/cdrip.cpp mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cdrip.cpp
 --- mythtv-0.28/mythplugins/mythmusic/mythmusic/cdrip.cpp	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cdrip.cpp	2016-11-12 17:12:58.338077051 +0000
++++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/cdrip.cpp	2016-11-12 18:26:06.014807314 +0000
 @@ -12,6 +12,11 @@
  # include <cdio/paranoia.h>
  #endif //def HAVE_CDIO
@@ -78,116 +78,186 @@ diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/cdrip.cpp mythtv-0.28_new/
 +#ifdef HAVE_CDIO_PARANOIA
 +# include <cdio/paranoia/cdda.h>
 +# include <cdio/paranoia/paranoia.h>
-+#endif
++#endif //def HAVE_CDIO_PARANOIA
 +
  // C++ includes
  #include <iostream>
  #include <memory>
-@@ -52,7 +57,7 @@
+@@ -52,9 +57,9 @@
  
  // MythMusic includes
  #include "cdrip.h"
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  #include "cddecoder.h"
- #endif // HAVE_CDIO
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
  #include "encoder.h"
+ #include "vorbisencoder.h"
+ #include "lameencoder.h"
 @@ -64,7 +69,7 @@
  #include "mythlogging.h"
  #include "musicutils.h"
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  // libparanoia compatibility
  #ifndef cdrom_paranoia
  #define cdrom_paranoia cdrom_paranoia_t
+@@ -73,7 +78,7 @@
+ #ifndef CD_FRAMESIZE_RAW
+ # define CD_FRAMESIZE_RAW CDIO_CD_FRAMESIZE_RAW
+ #endif // CD_FRAMESIZE_RAW
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
+ 
+ QEvent::Type RipStatusEvent::kTrackTextEvent =
+     (QEvent::Type) QEvent::registerEventType();
 @@ -132,7 +137,7 @@
  
  static long int getSectorCount (QString &cddevice, int tracknum)
  {
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
      QByteArray devname = cddevice.toLatin1();
      cdrom_drive *device = cdda_identify(devname.constData(), 0, NULL);
  
-@@ -172,7 +177,7 @@
+@@ -168,15 +173,15 @@
+     cdda_close(device);
+ #else
+     (void)cddevice; (void)tracknum;
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
      return 0;
  }
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  static void paranoia_cb(long, paranoia_cb_mode_t)
  {
  }
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
+ 
+ CDRipperThread::CDRipperThread(RipStatus *parent,  QString device,
+                                QVector<RipTrack*> *tracks, int quality) :
 @@ -413,7 +418,7 @@
  
  int CDRipperThread::ripTrack(QString &cddevice, Encoder *encoder, int tracknum)
  {
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
      QByteArray devname = cddevice.toLatin1();
      cdrom_drive *device = cdda_identify(devname.constData(), 0, NULL);
  
-@@ -873,7 +878,7 @@
+@@ -529,7 +534,7 @@
+ #else
+     (void)cddevice; (void)encoder; (void)tracknum;
+     return 0;
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+@@ -873,13 +878,13 @@
  
  void Ripper::scanCD(void)
  {
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
      {
      LOG(VB_MEDIA, LOG_INFO, QString("Ripper::%1 CD='%2'").
          arg(__func__).arg(m_CDdevice));
+     (void)cdio_close_tray(m_CDdevice.toLatin1().constData(), NULL);
+     }
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
+ 
+     if (m_decoder)
+         delete m_decoder;
 @@ -1226,7 +1231,7 @@
      bool bEjectCD = gCoreContext->GetNumSetting("EjectCDAfterRipping",1);
      if (bEjectCD)
      {
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
          LOG(VB_MEDIA, LOG_INFO, QString("Ripper::%1 '%2'").
              arg(__func__).arg(m_CDdevice));
          (void)cdio_eject_media_drive(m_CDdevice.toLatin1().constData());
+@@ -1242,7 +1247,7 @@
+                 mon->Unlock(pMedia);
+             }
+         }
+-#endif // HAVE_CDIO
++#endif // HAVE_CDIO || HAVE_CDIO_PARANOIA
+     }
+ }
+ 
 diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/decoder.cpp mythtv-0.28_new/mythplugins/mythmusic/mythmusic/decoder.cpp
 --- mythtv-0.28/mythplugins/mythmusic/mythmusic/decoder.cpp	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/decoder.cpp	2016-11-12 17:12:58.338077051 +0000
++++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/decoder.cpp	2016-11-12 18:26:21.677528862 +0000
 @@ -71,7 +71,7 @@
      {
          factories = new QList<DecoderFactory*>;
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
          Decoder::registerFactory(new CdDecoderFactory);
  #endif
          Decoder::registerFactory(new avfDecoderFactory);
 diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/main.cpp mythtv-0.28_new/mythplugins/mythmusic/mythmusic/main.cpp
 --- mythtv-0.28/mythplugins/mythmusic/mythmusic/main.cpp	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/main.cpp	2016-11-12 17:12:58.332077155 +0000
-@@ -47,7 +47,7 @@
++++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/main.cpp	2016-11-12 18:23:29.880584947 +0000
+@@ -47,11 +47,11 @@
  #include "importmusic.h"
  #include "metaio.h"
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  #include "cdrip.h"
  #endif
  
+-#if defined HAVE_CDIO
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
+ /**
+  * \brief Work out the best CD drive to use at this time
+  */
+@@ -197,7 +197,7 @@
+ 
+ static void startRipper(void)
+ {
+-#if defined HAVE_CDIO
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
+     if (!checkStorageGroup())
+         return;
+ 
+@@ -418,7 +418,7 @@
+ {
+     gMusicData->loadMusic();
+ 
+-#if defined HAVE_CDIO
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
+     MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
+ 
+     Ripper *rip = new Ripper(mainStack, chooseCD());
 @@ -638,7 +638,7 @@
      }
  }
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  static void handleCDMedia(MythMediaDevice *cd)
  {
  
 diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/musicplayer.cpp mythtv-0.28_new/mythplugins/mythmusic/mythmusic/musicplayer.cpp
 --- mythtv-0.28/mythplugins/mythmusic/mythmusic/musicplayer.cpp	2016-04-11 20:30:28.000000000 +0100
-+++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/musicplayer.cpp	2016-11-12 17:12:58.335077103 +0000
++++ mythtv-0.28_new/mythplugins/mythmusic/mythmusic/musicplayer.cpp	2016-11-12 18:26:35.085290527 +0000
 @@ -24,7 +24,7 @@
  #include "decoder.h"
  #include "decoderhandler.h"
  #include "metaio.h"
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
  #include "cddecoder.h"
  #endif
  #include "constants.h"
@@ -196,7 +266,7 @@ diff -ruN mythtv-0.28/mythplugins/mythmusic/mythmusic/musicplayer.cpp mythtv-0.2
              .arg(getDecoder()->getURL()));
  
 -#ifdef HAVE_CDIO
-+#if defined(HAVE_CDIO) || defined(HAVE_CDIO_PARANOIA)
++#if defined HAVE_CDIO || defined HAVE_CDIO_PARANOIA
      CdDecoder *cddecoder = dynamic_cast<CdDecoder*>(getDecoder());
      if (cddecoder)
          cddecoder->setDevice(gCDdevice);
