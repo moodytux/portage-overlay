@@ -138,7 +138,7 @@ S="${WORKDIR}/mythtv-${PV}/mythplugins"
 src_prepare() {
 	sed -i '1i#define OF(x) x' mythgame/mythgame/external/ioapi.h
 
-	epatch "${FILESDIR}/configure.patch"
+	epatch "${FILESDIR}/cdio_paranoia.patch"
 
 	default_src_prepare
 }
