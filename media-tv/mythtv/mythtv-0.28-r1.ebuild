@@ -44,14 +44,14 @@ COMMON="
 	x11-libs/libXv:=
 	x11-libs/libXrandr:=
 	x11-libs/libXxf86vm:=
-	dev-qt/qtcore:5/5.6
-	dev-qt/qtdbus:5/5.6
-	dev-qt/qtgui:5/5.6
-	dev-qt/qtscript:5/5.6
-	dev-qt/qtsql:5/5.6[mysql]
-	dev-qt/qtopengl:5/5.6
-	dev-qt/qtwebkit:5/5.6
-	dev-qt/qtxml:5/5.6
+	dev-qt/qtcore:5/5.7
+	dev-qt/qtdbus:5/5.7
+	dev-qt/qtgui:5/5.7
+	dev-qt/qtscript:5/5.7
+	dev-qt/qtsql:5/5.7[mysql]
+	dev-qt/qtopengl:5/5.7
+	dev-qt/qtwebkit:5/5.7
+	dev-qt/qtxml:5/5.7
 	x11-misc/wmctrl:=
 	virtual/mysql
 	virtual/opengl:=
