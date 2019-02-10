@@ -5,13 +5,13 @@ EAPI=6
 PYTHON_COMPAT=( python2_7 )
 
 # git diff --relative=mythtv v0.27.6.. > ~/mythtv-0.27.6/patches/mythtv.patch
-BACKPORTS="44fee4bc8a4a69b2ae2ee09fb6568f47d1f8269d"
+BACKPORTS="af5d819671ebd4fe4fbd1ff6c2fc978561bde9f3"
 MY_P=${P%_p*}
 MY_PV=${PV%_p*}
 
 inherit flag-o-matic python-single-r1 qmake-utils user readme.gentoo-r1 systemd vcs-snapshot
 
-MYTHTV_BRANCH="fixes/30"
+MYTHTV_BRANCH="fixes/29"
 
 DESCRIPTION="Homebrew PVR project"
 HOMEPAGE="https://www.mythtv.org"
@@ -23,7 +23,7 @@ SLOT="0/${PV}"
 
 IUSE_INPUT_DEVICES="input_devices_joystick"
 IUSE="alsa altivec autostart bluray cec crystalhd debug dvb dvd egl fftw +hls \
-	ieee1394 jack lcd libass lirc perl pulseaudio python systemd +theora \
+	ieee1394 jack lcd libass lirc mythlogserver perl pulseaudio python systemd +theora \
 	vaapi vdpau +vorbis +wrapper +xml xmltv +xvid zeroconf ${IUSE_INPUT_DEVICES}"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}
 	bluray? ( xml )
@@ -57,9 +57,9 @@ COMMON="
 	x11-libs/libXxf86vm
 	x11-misc/wmctrl
 	alsa? ( >=media-libs/alsa-lib-1.0.24 )
-	media-libs/libbluray:=
 	bluray? (
 		dev-libs/libcdio:=
+		media-libs/libbluray:=
 		sys-fs/udisks:2
 	)
 	cec? ( dev-libs/libcec )
@@ -205,6 +205,8 @@ src_configure() {
 	myconf="${myconf} --enable-libmp3lame" # lame is not optional it is required for some broadcasts for silence detection of commercials
 	use cec || myconf="${myconf} --disable-libcec"
 	use zeroconf || myconf="${myconf} --disable-libdns-sd"
+	myconf="${myconf} $(use_enable theora libtheora)"
+	myconf="${myconf} $(use_enable vorbis libvorbis)"
 
 	if use hls; then
 		myconf="${myconf} --enable-libx264"
@@ -265,11 +267,9 @@ src_configure() {
 
 	myconf="${myconf} $(use_enable systemd systemd_notify)"
 	myconf="${myconf} $(use_enable systemd systemd_journal)"
+	use systemd || myconf="${myconf} $(use_enable mythlogserver)"
 
 	chmod +x ./external/FFmpeg/version.sh
-
-	# Disable the nvidia based flags for now
-	myconf="${myconf} --disable-xnvctrl"
 
 	einfo "Running ./configure ${myconf}"
 	./configure \
