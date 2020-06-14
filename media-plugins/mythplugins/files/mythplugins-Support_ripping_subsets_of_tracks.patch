@@ -1,4 +1,4 @@
---- mythmusic/cdrip.cpp	2020-03-23 14:32:28.000000000 +0000
+--- mythplugins/mythmusic/mythmusic/cdrip.cpp	2020-03-23 14:32:28.000000000 +0000
 +++ /tmp/cdrip.cpp	2020-06-14 14:31:13.070846014 +0100
 @@ -325,7 +325,18 @@
                                                    titleTrack));
