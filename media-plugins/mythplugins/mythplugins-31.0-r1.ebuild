@@ -122,7 +122,7 @@ RDEPEND="
 DEPEND=${RDEPEND}
 
 PATCHES=(
-	"${FILESDIR}/${P}-Support_ripping_subsets_of_tracks.patch"
+	"${FILESDIR}/${PN}-Support_ripping_subsets_of_tracks.patch"
 )
 
 # mythtv and mythplugins are separate builds in the same github MythTV/mythtv repository
