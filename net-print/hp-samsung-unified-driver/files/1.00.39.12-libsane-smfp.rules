@@ -1,0 +1,18 @@
+# This file is a part of net-print/samsung-unified-driver package and is based
+# on udev rules shipped by HP, but assigns permissions and ownership in
+# the SANE way.
+#
+ACTION!="add", GOTO="libsane_smfp_rules_end"
+ENV{DEVTYPE}=="usb_device", GOTO="libsane_smfp_rules_begin"
+SUBSYSTEM=="usb|usb_device", GOTO="libsane_smfp_rules_begin"
+GOTO="libsane_smfp_rules_end"
+
+LABEL="libsane_smfp_rules_begin"
+
+ATTRS{idVendor}=="03F0", ATTRS{idProduct}=="AA2A", MODE="0664", GROUP="scanner", ENV{libsane_matched}="yes"
+ATTRS{idVendor}=="03F0", ATTRS{idProduct}=="CE2A", MODE="0664", GROUP="scanner", ENV{libsane_matched}="yes"
+ATTRS{idVendor}=="03F0", ATTRS{idProduct}=="C02A", MODE="0664", GROUP="scanner", ENV{libsane_matched}="yes"
+ATTRS{idVendor}=="03F0", ATTRS{idProduct}=="EB2A", MODE="0664", GROUP="scanner", ENV{libsane_matched}="yes"
+ATTRS{idVendor}=="03F0", ATTRS{idProduct}=="F22A", MODE="0664", GROUP="scanner", ENV{libsane_matched}="yes"
+
+LABEL="libsane_smfp_rules_end"
