@@ -83,6 +83,8 @@ src_install() {
 		dodir /usr/share/cups/profiles/hp
 		insinto /usr/share/cups/profiles/hp
 		doins noarch/share/ppd/cms/*.cts
+
+		udev_newrules "${FILESDIR}/${PV}-hp-uld.rules" 40-hp-uld.rules
 	fi
 
 	# Scanner support.
@@ -100,7 +102,6 @@ src_install() {
 		dosym libsane-smfp.so.1.0.1 /usr/$(get_libdir)/sane/libsane-smfp.so
 		dosym libsane-smfp.so.1.0.1 /usr/$(get_libdir)/sane/libsane-smfp.so.1
 
-		udev_newrules "${FILESDIR}/${PV}-libsane-smfp.rules" 40-libsane-smfp.rules
 		insinto /etc/sane.d/dll.d
 		echo smfp > "${ED}"/etc/sane.d/dll.d/hp.conf
 	fi
