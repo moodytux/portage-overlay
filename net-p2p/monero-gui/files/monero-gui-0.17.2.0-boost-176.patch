@@ -11,8 +11,8 @@ monero-project/monero/issues/7728
 
 diff --git a/contrib/epee/include/storages/portable_storage.h b/contrib/epee/include/storages/portable_storage.h
 index 1e68605abf5..801bb2c3465 100644
---- a/contrib/epee/include/storages/portable_storage.h
-+++ b/contrib/epee/include/storages/portable_storage.h
+--- ./monero/contrib/epee/include/storages/portable_storage.h
++++ ./monero/contrib/epee/include/storages/portable_storage.h
 @@ -40,6 +40,8 @@
  #include "span.h"
  #include "int-util.h"
