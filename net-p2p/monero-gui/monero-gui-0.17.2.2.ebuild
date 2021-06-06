@@ -29,6 +29,10 @@ DEPEND="
 RDEPEND="${DEPEND}"
 BDEPEND="virtual/pkgconfig"
 
+PATCHES=(
+	"${FILESDIR}/${PN}-0.17.2.0-boost-176.patch"
+)
+
 src_configure() {
 	local mycmakeargs=(
 		# Monero's liblmdb conflicts with the system liblmdb :(
