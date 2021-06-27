@@ -40,6 +40,7 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}"
 
 src_prepare() {
+	default_src_prepare
 	eautoreconf
 	vala_src_prepare
 }
