@@ -134,6 +134,11 @@ As of 3/23/2020, MythNetVision is disabled, work in progress.
 
 No plugins are installed by default. Enable plugins individually with USE flags:
 mytharchive mythbrowser mythgame mythmusic mythnetvision mythnews mythweather mythzmserver mythzoneminder
+
+To use mythmusic, you will need to unmask dev-qt/qtwebkit, and add the following to
+/etc/portage/profile/package.use.mask to allow mythmusic to proceed:
+
+media-plugins/mythplugins -mythmusic
 "
 
 src_configure() {
