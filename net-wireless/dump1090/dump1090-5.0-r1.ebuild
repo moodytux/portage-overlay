@@ -50,6 +50,8 @@ onto the end of /etc/lighttpd/lighttpd.conf.
 
 Also, if you don't already have mod_alias enabled, you will
 need to enable it in the same file.
+
+To view the aircraft on the map, visit: http://localhost/skyaware/
 "
 
 src_prepare() {
