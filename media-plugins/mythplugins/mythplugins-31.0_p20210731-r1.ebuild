@@ -19,10 +19,10 @@ HOMEPAGE="https://www.mythtv.org https://github.com/MythTV/mythtv"
 # mythtv and mythplugins are separate builds in the same github MythTV/mythtv repository
 if [[ $(ver_cut 3) == "p" ]] ; then
 	SRC_URI="https://github.com/MythTV/mythtv/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/mythtv-${MY_COMMIT}/mythtv"
+	S="${WORKDIR}/mythtv-${MY_COMMIT}/mythplugins"
 else
 	SRC_URI="https://github.com/MythTV/mythtv/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/${P}/mythtv"
+	S="${WORKDIR}/${P}/mythplugins"
 fi
 LICENSE="GPL-2+"
 KEYWORDS="~amd64 ~x86"
