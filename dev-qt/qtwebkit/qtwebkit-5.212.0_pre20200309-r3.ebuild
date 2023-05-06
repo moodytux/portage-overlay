@@ -13,7 +13,7 @@ else
 	KEYWORDS="amd64 arm arm64 ppc64 x86"
 	S="${WORKDIR}/${MY_P}"
 fi
-PYTHON_COMPAT=( python3_{7,8,9} )
+PYTHON_COMPAT=( python3_10 )
 USE_RUBY="ruby30"
 inherit check-reqs cmake flag-o-matic python-any-r1 qmake-utils ruby-single toolchain-funcs
 
