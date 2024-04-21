@@ -1,0 +1,22 @@
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/xml/XSLTProcessorLibxslt.cpp	2020-03-04 17:16:37.000000000 +0000
++++ /tmp/XSLTProcessorLibxslt.cpp	2024-02-17 09:29:39.449768955 +0000
+@@ -78,7 +78,7 @@
+     // It would be nice to do something with this error message.
+ }
+ 
+-void XSLTProcessor::parseErrorFunc(void* userData, xmlError* error)
++void XSLTProcessor::parseErrorFunc(void* userData, const xmlError* error)
+ {
+     PageConsoleClient* console = static_cast<PageConsoleClient*>(userData);
+     if (!console)
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/xml/XSLTProcessor.h	2020-03-04 17:16:37.000000000 +0000
++++ /tmp/XSLTProcessor.h	2024-02-17 09:29:27.967712392 +0000
+@@ -64,7 +64,7 @@
+ 
+     void reset();
+ 
+-    static void parseErrorFunc(void* userData, xmlError*);
++    static void parseErrorFunc(void* userData, const xmlError*);
+     static void genericErrorFunc(void* userData, const char* msg, ...);
+     
+     // Only for libXSLT callbacks
