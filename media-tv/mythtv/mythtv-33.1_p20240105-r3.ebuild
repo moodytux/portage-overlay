@@ -1,18 +1,18 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISABLE_AUTOFORMATTING="yes"
-PYTHON_COMPAT=( python3_{10..11} )
+PYTHON_COMPAT=( python3_{12..13} )
 
-inherit edo flag-o-matic java-pkg-opt-2 java-ant-2 python-any-r1
+inherit edo flag-o-matic java-pkg-opt-2 python-any-r1
 inherit qmake-utils readme.gentoo-r1 systemd toolchain-funcs user-info
 
 DESCRIPTION="Open Source DVR and media center hub"
 HOMEPAGE="https://www.mythtv.org https://github.com/MythTV/mythtv"
 if [[ ${PV} == *_p* ]] ; then
-	MY_COMMIT="525efb656d6ded1f8e5396423af626ce22b2714f"
+	MY_COMMIT="6b442547f2746b01f51a051438b4d02db9441b36"
 	SRC_URI="https://github.com/MythTV/mythtv/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz"
 	# mythtv and mythplugins are separate builds in the github MythTV project
 	S="${WORKDIR}/mythtv-${MY_COMMIT}/mythtv"
@@ -131,34 +131,29 @@ DEPEND="
 "
 BDEPEND="
 	virtual/pkgconfig
+	java? ( >=dev-java/ant-1.10.14-r3 )
 	opengl? ( virtual/opengl )
 	python? (
 		${PYTHON_DEPS}
 		$(python_gen_any_dep '
 			dev-python/python-dateutil[${PYTHON_USEDEP}]
-			dev-python/future[${PYTHON_USEDEP}]
 			dev-python/lxml[${PYTHON_USEDEP}]
 			dev-python/mysqlclient[${PYTHON_USEDEP}]
 			dev-python/requests-cache[${PYTHON_USEDEP}]
-			dev-python/simplejson[${PYTHON_USEDEP}]
 		')
 	)
 "
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-33.1-libva.patch
-	"${FILESDIR}"/${PN}-33.1-ffmpeg-binutils-2.41.patch
-	"${FILESDIR}"/${PN}-33.1-linux-headers-6.5.patch
 )
 
 python_check_deps() {
 	use python || return 0
 	python_has_version "dev-python/python-dateutil[${PYTHON_USEDEP}]" &&
-	python_has_version "dev-python/future[${PYTHON_USEDEP}]" &&
 	python_has_version "dev-python/lxml[${PYTHON_USEDEP}]" &&
 	python_has_version "dev-python/mysqlclient[${PYTHON_USEDEP}]" &&
-	python_has_version "dev-python/requests-cache[${PYTHON_USEDEP}]" &&
-	python_has_version "dev-python/simplejson[${PYTHON_USEDEP}]"
+	python_has_version "dev-python/requests-cache[${PYTHON_USEDEP}]"
 }
 
 pkg_setup() {
@@ -167,6 +162,14 @@ pkg_setup() {
 
 src_prepare() {
 	default
+	cat > external/libmythbluray/src/libbluray/bdj/build.properties <<-EOF
+		java_version_asm=1.8
+		java_version_bdj=1.8
+	EOF
+	# https://github.com/MythTV/mythtv/pull/824
+	# https://github.com/MythTV/mythtv/pull/838
+	# https://bugs.gentoo.org/888291
+	eapply -p2 "${FILESDIR}"/${PN}-33.1-python3.12.patch
 
 	# Perl bits need to go into vendor_perl and not site_perl
 	sed -e "s:pure_install:pure_install INSTALLDIRS=vendor:" \
