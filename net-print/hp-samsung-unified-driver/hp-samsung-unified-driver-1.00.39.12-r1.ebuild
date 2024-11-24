@@ -78,7 +78,7 @@ src_install() {
 		dodir /usr/share/cups/model/hp
 		insinto /usr/share/cups/model/hp
 		doins noarch/share/ppd/*.ppd
-		gzip -9 "${ED}"usr/share/cups/model/hp/*.ppd || die
+		gzip -9 "${ED}"/usr/share/cups/model/hp/*.ppd || die
 
 		dodir /usr/share/cups/profiles/hp
 		insinto /usr/share/cups/profiles/hp
