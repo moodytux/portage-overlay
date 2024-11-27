@@ -94,6 +94,9 @@ PATCHES=(
 	"${FILESDIR}/${P}-webkit-offlineasm-warnings-ruby27.patch"
 	# GCC 13
 	"${FILESDIR}/${P}-cstdint.patch"
+	"${FILESDIR}/${P}-libxml-2.12.patch"
+	"${FILESDIR}/${P}-build-gcc14.patch"
+	"${FILESDIR}/${P}-icu-75.patch"
 )
 
 _check_reqs() {
