@@ -31,7 +31,9 @@ RDEPEND="${DEPEND}"
 BDEPEND="virtual/pkgconfig"
 
 PATCHES=(
-	"${FILESDIR}/${PN}-cstdint.patch"
+	"${FILESDIR}/${PN}-0.18.3.3-unbundle-dependencies.patch"
+	"${FILESDIR}/${PN}-0.18.3.3-miniupnp-api-18.patch"
+	"${FILESDIR}/${PN}-0.18.3.4-boost-1.85.patch"
 )
 
 src_configure() {
