@@ -97,6 +97,7 @@ PATCHES=(
 	"${FILESDIR}/${P}-libxml-2.12.patch"
 	"${FILESDIR}/${P}-build-gcc14.patch"
 	"${FILESDIR}/${P}-icu-75.patch"
+	"${FILESDIR}/${P}-icu-76.1.patch"
 )
 
 _check_reqs() {
