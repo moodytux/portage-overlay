@@ -7,5 +7,5 @@ inherit acct-user
 
 DESCRIPTION="dump1090 program user"
 ACCT_USER_ID=-1
-ACCT_USER_GROUPS=( dump1090 usb )
+ACCT_USER_GROUPS=( dump1090 usb plugdev )
 acct-user_add_deps
