@@ -1,0 +1,53 @@
+Upstream-PR: https://sourceforge.net/p/ta-lib/patches/6/
+From 05375dd96c3bdec814214f37a6c49d4a27079960 Mon Sep 17 00:00:00 2001
+From: orbea <orbea@riseup.net>
+Date: Thu, 12 May 2022 11:13:59 -0700
+Subject: [PATCH] Fix parallel Make issue with slibtool
+
+---
+ configure.in => configure.ac       |  4 ++++
+ src/tools/gen_code/gen_code_bin.sh | 16 ++++++++++++++++
+ 4 files changed, 30 insertions(+), 7 deletions(-)
+ rename configure.in => configure.ac (96%)
+ create mode 100755 src/tools/gen_code/gen_code_bin.sh
+
+diff --git a/configure.in b/configure.ac
+similarity index 96%
+rename from configure.in
+rename to configure.ac
+index d2e5784..359d400 100644
+--- a/configure.in
++++ b/configure.ac
+@@ -35,6 +35,10 @@ AC_FUNC_STRTOD
+ AC_FUNC_VPRINTF
+ AC_CHECK_FUNCS([floor isascii localeconv mblen memmove memset modf pow sqrt strcasecmp strchr strerror strncasecmp strrchr strstr strtol strtoul])
+ 
++# Checks for libm
++AC_CHECK_LIBM
++AC_SUBST([LIBM])
++
+ # Versioning:
+ # Only change this if library is no longer
+ # ABI compatible with previous version
+diff --git a/src/tools/gen_code/gen_code_bin.sh b/src/tools/gen_code/gen_code_bin.sh
+new file mode 100755
+index 0000000..b19fd09
+--- /dev/null
++++ b/src/tools/gen_code/gen_code_bin.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++
++# This is a work around for a slibtool bug with --mode=execute
++#
++# With slibtool the gen_code binary is created in the .libs directory while GNU
++# libtool outputs in the same directory as the Makefile. This means that cp(1)
++# needs to be invoked with $(LIBTOOL) --mode=execute.
++#
++# However slibtool currently has a bug where the destination argument is dropped
++# which will result in the command failing.
++#
++# See https://bugs.gentoo.org/790770
++
++set -eu
++
++cp "${1}" ../../../bin
