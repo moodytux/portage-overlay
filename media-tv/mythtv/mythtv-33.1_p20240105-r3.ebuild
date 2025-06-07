@@ -58,7 +58,7 @@ RDEPEND="
 	media-libs/libbluray:=[java?]
 	media-libs/libsamplerate
 	media-libs/libsoundtouch
-	media-libs/taglib
+	media-libs/taglib:=
 	sys-libs/zlib
 	alsa? ( media-libs/alsa-lib )
 	autostart? (
@@ -107,7 +107,7 @@ RDEPEND="
 	xmltv? (
 		dev-perl/XML-LibXML
 		media-tv/xmltv
-	 )
+	)
 	xvid? ( media-libs/xvid )
 	zeroconf? (
 		dev-libs/openssl:=
@@ -369,7 +369,8 @@ src_install() {
 	use python && python_fix_shebang "${ED}/usr/share/mythtv"
 
 	# Make shell & perl scripts executable
-	find "${ED}" -type f \( -name '*.sh' -o -name '*.pl' \) -exec chmod a+x {} \; || die "Failed to make script executable"
+	find "${ED}" -type f \( -name '*.sh' -o -name '*.pl' \) -exec chmod a+x {} \; \
+		|| die "Failed to make script executable"
 }
 
 pkg_postinst() {
