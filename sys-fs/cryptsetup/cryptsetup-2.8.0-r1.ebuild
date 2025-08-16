@@ -3,7 +3,7 @@
 
 EAPI=8
 
-# TODO: meson
+# TODO: meson (not just yet as of 2.8.0, see https://gitlab.com/cryptsetup/cryptsetup/-/issues/949#note_2585304492)
 inherit linux-info tmpfiles
 
 DESCRIPTION="Tool to setup encrypted devices with dm-crypt"
@@ -64,8 +64,6 @@ BDEPEND="
 	virtual/pkgconfig
 	test? ( app-editors/vim-core )
 "
-
-PATCHES=( "${FILESDIR}"/${P}-compat-test-passwdqc.patch )
 
 pkg_setup() {
 	local CONFIG_CHECK="~DM_CRYPT ~CRYPTO ~CRYPTO_CBC ~CRYPTO_SHA256"
