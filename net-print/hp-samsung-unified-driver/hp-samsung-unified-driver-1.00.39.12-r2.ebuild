@@ -26,6 +26,7 @@ RDEPEND="
 	scanner? (
 		media-gfx/sane-backends
 		dev-libs/libxml2:2
+		dev-libs/libxml2-compat:2
 		virtual/libusb:0
 	)
 	network? ( virtual/libusb )
