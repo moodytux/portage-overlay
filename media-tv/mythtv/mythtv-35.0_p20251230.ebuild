@@ -1,18 +1,19 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 DISABLE_AUTOFORMATTING="yes"
-PYTHON_COMPAT=( python3_{12..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 
-inherit edo flag-o-matic java-pkg-opt-2 python-any-r1
+inherit edo flag-o-matic python-any-r1
 inherit qmake-utils readme.gentoo-r1 systemd toolchain-funcs user-info
 
 DESCRIPTION="Open Source DVR and media center hub"
 HOMEPAGE="https://www.mythtv.org https://github.com/MythTV/mythtv"
 if [[ ${PV} == *_p* ]] ; then
-	MY_COMMIT="6b442547f2746b01f51a051438b4d02db9441b36"
+	# https://github.com/MythTV/mythtv/tree/fixes/35
+	MY_COMMIT="805e05b76a9ab760169f901fd1149276fa17ccfb"
 	SRC_URI="https://github.com/MythTV/mythtv/archive/${MY_COMMIT}.tar.gz -> ${P}.tar.gz"
 	# mythtv and mythplugins are separate builds in the github MythTV project
 	S="${WORKDIR}/mythtv-${MY_COMMIT}/mythtv"
@@ -28,7 +29,7 @@ KEYWORDS="~amd64 ~x86"
 
 IUSE_INPUT_DEVICES="input_devices_joystick"
 IUSE_VIDEO_CAPTURE_DEVICES="v4l ieee1394 hdhomerun vbox ceton"
-IUSE="alsa asi autostart cdda cdr cec cpu_flags_ppc_altivec debug dvd dvb exif fftw jack java"
+IUSE="alsa asi autostart cdda cdr cec cpu_flags_ppc_altivec debug dvd dvb exif jack java"
 IUSE+=" +lame lcd libass lirc nvdec +opengl oss perl pulseaudio python raw systemd vaapi vdpau vpx"
 IUSE+=" +wrapper x264 x265 +xml xmltv +xvid +X zeroconf"
 IUSE+=" ${IUSE_INPUT_DEVICES} ${IUSE_VIDEO_CAPTURE_DEVICES}"
@@ -39,16 +40,9 @@ REQUIRED_USE="
 RDEPEND="
 	acct-user/mythtv
 	dev-libs/glib:2
-	dev-libs/lzo
+	dev-libs/lzo:2
 	dev-libs/libzip:=
-	dev-qt/qtcore:5
-	dev-qt/qtdbus:5
-	dev-qt/qtgui:5[jpeg]
-	dev-qt/qtnetwork:5
-	dev-qt/qtscript:5
-	dev-qt/qtsql:5[mysql]
-	dev-qt/qtwidgets:5
-	dev-qt/qtxml:5
+	dev-qt/qtbase:6[dbus,gui,mysql,network,sql,xml,widgets]
 	media-fonts/corefonts
 	media-fonts/dejavu
 	media-fonts/liberation-fonts
@@ -57,9 +51,9 @@ RDEPEND="
 	media-libs/freetype:2
 	media-libs/libbluray:=[java?]
 	media-libs/libsamplerate
-	media-libs/libsoundtouch
+	media-libs/libsoundtouch:=
 	media-libs/taglib:=
-	sys-libs/zlib
+	virtual/zlib:=
 	alsa? ( media-libs/alsa-lib )
 	autostart? (
 		net-dialup/mingetty
@@ -72,7 +66,6 @@ RDEPEND="
 		media-libs/libdvdcss
 		sys-fs/udisks:2
 	)
-	fftw? ( sci-libs/fftw:3.0=[threads] )
 	hdhomerun? ( media-libs/libhdhomerun )
 	ieee1394? (
 		media-libs/libiec61883
@@ -85,20 +78,19 @@ RDEPEND="
 	libass? ( media-libs/libass:= )
 	lirc? ( app-misc/lirc )
 	nvdec? ( x11-drivers/nvidia-drivers )
-	opengl? ( dev-qt/qtopengl:5 )
+	opengl? ( dev-qt/qtbase:6[opengl] )
 	pulseaudio? ( media-libs/libpulse )
 	systemd? ( sys-apps/systemd:= )
-	vaapi? ( media-libs/libva:= )
+	vaapi? ( media-libs/libva:=[X] )
 	vdpau? ( x11-libs/libvdpau )
 	vpx? ( media-libs/libvpx:= )
 	x264? (	media-libs/x264:= )
 	X? (
 		x11-apps/xinit
-		x11-libs/libX11:=
-		x11-libs/libXext:=
-		x11-libs/libXinerama:=
-		x11-libs/libXrandr:=
-		x11-libs/libXv:=
+		x11-libs/libX11
+		x11-libs/libXext
+		x11-libs/libXrandr
+		x11-libs/libXv
 		x11-libs/libXxf86vm:=
 		x11-misc/wmctrl:=
 	)
@@ -131,7 +123,6 @@ DEPEND="
 "
 BDEPEND="
 	virtual/pkgconfig
-	java? ( >=dev-java/ant-1.10.14-r3 )
 	opengl? ( virtual/opengl )
 	python? (
 		${PYTHON_DEPS}
@@ -139,13 +130,17 @@ BDEPEND="
 			dev-python/python-dateutil[${PYTHON_USEDEP}]
 			dev-python/lxml[${PYTHON_USEDEP}]
 			dev-python/mysqlclient[${PYTHON_USEDEP}]
+			dev-python/pip[${PYTHON_USEDEP}]
 			dev-python/requests-cache[${PYTHON_USEDEP}]
+			dev-python/wheel[${PYTHON_USEDEP}]
 		')
 	)
 "
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-33.1-libva.patch
+	"${FILESDIR}"/${PN}-35.no-ant-java-required-if-use-system-libblur.patch
+	"${FILESDIR}"/${PN}-35.freemheg-update-visibility-of-MHCreateEngine-MHSetLo.patch
 )
 
 python_check_deps() {
@@ -153,7 +148,20 @@ python_check_deps() {
 	python_has_version "dev-python/python-dateutil[${PYTHON_USEDEP}]" &&
 	python_has_version "dev-python/lxml[${PYTHON_USEDEP}]" &&
 	python_has_version "dev-python/mysqlclient[${PYTHON_USEDEP}]" &&
-	python_has_version "dev-python/requests-cache[${PYTHON_USEDEP}]"
+	python_has_version "dev-python/requests-cache[${PYTHON_USEDEP}]" &&
+	python_has_version "dev-python/pip[${PYTHON_USEDEP}]" &&
+	python_has_version "dev-python/wheel[${PYTHON_USEDEP}]"
+}
+
+pkg_pretend() {
+	if use autostart; then
+		local HOME_MYTHTV=$(egethome mythtv)
+		if [[ ! -z "${HOME_MYTHTV}" && ! -d "${HOME_MYTHTV}" ]] ; then
+			eerror "Home path '${HOME_MYTHTV}' for user 'mythtv' exists" \
+				"but is not a directory"
+			die
+		fi
+	fi
 }
 
 pkg_setup() {
@@ -162,22 +170,15 @@ pkg_setup() {
 
 src_prepare() {
 	default
-	cat > external/libmythbluray/src/libbluray/bdj/build.properties <<-EOF
-		java_version_asm=1.8
-		java_version_bdj=1.8
-	EOF
-	# https://github.com/MythTV/mythtv/pull/824
-	# https://github.com/MythTV/mythtv/pull/838
-	# https://bugs.gentoo.org/888291
-	eapply -p2 "${FILESDIR}"/${PN}-33.1-python3.12.patch
 
 	# Perl bits need to go into vendor_perl and not site_perl
 	sed -e "s:pure_install:pure_install INSTALLDIRS=vendor:" \
 		-i "${S}"/bindings/perl/Makefile || die "Cannot convert site_perl to vendor_perl!"
-
 }
 
 src_configure() {
+	use elibc_musl && append-flags -D_LARGEFILE64_SOURCE  # 924347
+
 	local -a myconf=()
 
 	# Setup paths
@@ -188,7 +189,6 @@ src_configure() {
 
 	if use debug; then
 		myconf+=( --compile-type=debug )
-		myconf+=( --disable-stripping ) # FIXME: does not disable for all files, only for some
 		myconf+=( --enable-valgrind ) # disables timeouts for valgrind memory debugging
 	else
 		myconf+=( --compile-type=release )
@@ -289,6 +289,13 @@ src_configure() {
 	myconf+=( --enable-symbol-visibility )
 	myconf+=( --enable-pic )
 
+	# libavformat/format.c:37:22: error: type of 'ff_mythtv_mpegtsraw_demuxer' does not match original declaration [-Werror=lto-type-mismatch]
+	# libavformat/mpegts-mythtv.c:3731:21: note: type 'const struct FFInputFormat' should match type 'struct AVInputFormat'
+	filter-lto
+
+	# Needed just like ffmpeg (bug #860987)
+	tc-is-lto && myconf+=( --enable-lto )
+
 	if tc-is-cross-compiler ; then
 		myconf+=( --enable-cross-compile --arch=$(tc-arch-kernel) )
 		myconf+=( --cross-prefix="${CHOST}"- )
@@ -302,16 +309,21 @@ src_configure() {
 		--cc="$(tc-getCC)" \
 		--cxx="$(tc-getCXX)" \
 		--ar="$(tc-getAR)" \
+		--nm="$(tc-getNM)" \
 		--optflags="${CFLAGS}" \
 		--extra-cflags="${CFLAGS}" \
 		--extra-cxxflags="${CXXFLAGS}" \
 		--extra-ldflags="${LDFLAGS}" \
-		--qmake="$(qt5_get_bindir)"/qmake \
+		--qmake="$(qt6_get_bindir)"/qmake \
 		"${myconf[@]}"
 }
 
+src_compile() {
+	emake V=1
+}
+
 src_install() {
-	emake STRIP="true" INSTALL_ROOT="${D}" install
+	emake V=1 STRIP="true" INSTALL_ROOT="${D}" install
 	use python && python_optimize  # does all packages by default
 	dodoc AUTHORS README
 	readme.gentoo_create_doc
@@ -319,7 +331,7 @@ src_install() {
 	insinto /usr/share/mythtv/database
 	doins database/*
 
-	newinitd "${FILESDIR}"/mythbackend.init-r3 mythbackend
+	newinitd "${FILESDIR}"/mythbackend.init-r4 mythbackend
 	newconfd "${FILESDIR}"/mythbackend.conf-r1 mythbackend
 	if use systemd; then
 		systemd_newunit "${FILESDIR}"/mythbackend.service-28 mythbackend.service

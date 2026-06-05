@@ -13,8 +13,9 @@ MYTHBACKEND_LOGGING=${MYTHBACKEND_LOGGING:-"files"}
 
 name="MythTV backend"
 command="/usr/bin/mythbackend"
+command_user="${command_user:-"mythtv:mythtv"}"
 pidfile="/run/mythtv/mythbackend.pid"
-start_stop_daemon_args="--pidfile ${pidfile} --user mythtv:mythtv"
+start_stop_daemon_args="--pidfile ${pidfile} --user ${command_user}"
 command_args="--daemon --pidfile ${pidfile} --verbose ${MYTHBACKEND_VERBOSE} ${MYTHBACKEND_OPTS}"
 
 depend() {
@@ -41,9 +42,9 @@ start_pre() {
 
 	# Work around any strange permissions that may be on these files.
 	[ "x${MYTHBACKEND_LOGGING}" = "xfiles" ] && \
-		checkpath --directory --owner mythtv:mythtv --mode 0755 /var/log/mythtv
-	checkpath --directory --owner mythtv:mythtv --mode 0775 "{$HOME}"
-	checkpath --directory --owner mythtv:mythtv --mode 0750 /run/mythtv
+		checkpath --directory --owner ${command_user} --mode 0755 /var/log/mythtv
+	checkpath --directory --owner ${command_user} --mode 0775 "{$HOME}"
+	checkpath --directory --owner ${command_user} --mode 0750 /run/mythtv
 }
 
 start() {
